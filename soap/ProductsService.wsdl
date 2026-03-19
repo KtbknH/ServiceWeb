@@ -18,23 +18,49 @@
 
 
       <xsd:element name="CreateProductResponse">
-
         <xsd:complexType>
-
           <xsd:sequence>
-
             <xsd:element name="id" type="xsd:string" />
-
             <xsd:element name="name" type="xsd:string" />
-
             <xsd:element name="about" type="xsd:string" />
-
             <xsd:element name="price" type="xsd:string" />
-
           </xsd:sequence>
-
         </xsd:complexType>
+      </xsd:element>
 
+
+      <xsd:element name="GetProductsResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" ref="Product" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="PatchProduct">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="id" type="xsd:string" />
+            <xsd:element name="name" type="xsd:string" minOccurs="0" />
+            <xsd:element name="about" type="xsd:string" minOccurs="0" />
+            <xsd:element name="price" type="xsd:string" minOccurs="0" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="DeleteProduct">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="id" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="Product">
+        <xsd:element name="id" type="xsd:string" />
+        <xsd:element name="name" type="xsd:string" />
+        <xsd:element name="about" type="xsd:string" />
+        <xsd:element name="price" type="xsd:string" />
       </xsd:element>
 
     </xsd:schema>
@@ -42,27 +68,18 @@
 
 
   <message name="CreateProductRequestMessage">
-
     <part name="request" element="tns:CreateProductRequest" />
-
   </message>
 
   <message name="CreateProductResponseMessage">
-
     <part name="response" element="tns:CreateProductResponse" />
-
   </message>
 
   <portType name="ProductsPortType">
-
     <operation name="CreateProduct">
-
       <input message="tns:CreateProductRequestMessage" />
-
       <output message="tns:CreateProductResponseMessage" />
-
     </operation>
-
   </portType>
 
   <binding name="ProductsBinding" type="tns:ProductsPortType">
@@ -87,5 +104,4 @@
     </port>
   </service>
 
-  
 </definitions>
