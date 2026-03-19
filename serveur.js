@@ -1,17 +1,40 @@
 const soap = require("soap");
 const fs = require("node:fs");
 const http = require("http");
+const X = 400; // Bad Request
+const postgres = require("postgres");
+
+const sql = postgres({
+  host: "localhost",
+  port: 5432,
+  database: "products",
+  username: "postgres",
+  password: "password",
+});
 
 // Define the service implementation
 const service = {
   ProductsService: {
     ProductsPort: {
-      CreateProduct: function (args, callback) {
-        // Log args received
-        console.log("ARGS : ", args);
-
-		// Send response with args and fake id.
-        callback({ ...args, id: "myid" });
+      CreateProduct: async function ({ name, about, price }, callback) {
+        if (!name || !about || !price) {
+          throw {
+            Fault: {
+              Code: {
+                Value: "soap:Sender",
+                Subcode: { value: "rpc:BadArguments" },
+              },
+              Reason: { Text: "Processing Error" },
+              statusCode: X,
+            },
+          };
+        }
+        const product = await sql`
+          INSERT INTO products (name, about, price)
+          VALUES (${name}, ${about}, ${price})
+          RETURNING *
+        `;
+        callback({ product: product[0] });
       },
     },
   },
